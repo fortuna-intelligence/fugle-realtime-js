@@ -1,0 +1,57 @@
+{
+  "author": {
+    "email": "development@fugle.tw",
+    "name": "Fortuna Intelligence"
+  },
+  "dependencies": {
+    "deepmerge": "^2.1.0",
+    "lodash": "^4.17.5",
+    "node-fetch": "^2.1.2",
+    "socket.io-client": "^2.1.0",
+    "wretch": "^1.1.2"
+  },
+  "description": "Fugle Realtime",
+  "devDependencies": {
+    "@types/deepmerge": "^2.1.0",
+    "@types/socket.io-client": "^1.4.32",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.57.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-babel-minify": "^4.0.0",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.2.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-typescript": "^0.8.1",
+    "typescript": "^2.8.1"
+  },
+  "files": [
+    "bundle",
+    "dist"
+  ],
+  "homepage": "https://www.fugle.tw",
+  "keywords": [
+    "fortuna",
+    "fugle",
+    "realtime",
+    "typescript"
+  ],
+  "license": "Apache-2.0",
+  "main": "bundle",
+  "module": "dist",
+  "name": "fugle-realtime",
+  "private": false,
+  "repository": {
+    "type": "npm",
+    "url": "https://www.npmjs.com/package/fugle-realtime"
+  },
+  "scripts": {
+    "build": "npm run build-rollup && npm run build-ts",
+    "build-rollup": "rimraf bundle && rollup -c",
+    "build-ts": "rimraf dist && tsc"
+  },
+  "types": "dist",
+  "version": "0.2.0"
+}
