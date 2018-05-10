@@ -126,10 +126,11 @@ const fugleRealtime = ({
   const join = async (
     { mode: m, symbolId }: IArgSocketIo,
     cb: Cb = (arg: ApiDoc): ApiDoc => arg,
+    errorCb = () => ({})
   ): Promise<void | SocketIOClient.Socket> => {
     const doc: ApiDoc = merge(
-      await meta({ mode: m, symbolId }).catch((): ApiDoc => ({})),
-      await tick({ mode: m, symbolId }).catch((): ApiDoc => ({})),
+      await meta({ mode: m, symbolId }).catch(errorCb),
+      await tick({ mode: m, symbolId }).catch(errorCb),
     );
     if (!isArray(doc.ticks)) {
       doc.ticks = [];
