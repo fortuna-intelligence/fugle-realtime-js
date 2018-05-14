@@ -34,6 +34,7 @@ export interface IArgFugleRealtime {
 }
 export declare type Ticks = IObjStrToAnyOrT<ApiDoc>;
 export declare type Cb = (arg: ApiDoc, bigO?: boolean) => any;
+export declare type ErrCb = (err: Error) => any;
 export interface IFugleRealtimeApiDoc {
     readonly meta: Api;
     readonly tick: Api;

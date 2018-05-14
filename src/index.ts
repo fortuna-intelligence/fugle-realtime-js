@@ -22,8 +22,8 @@ export interface IArgDate {
 export interface IArgSocketIo extends IArgMode {
   readonly symbolId: SymbolId;
 }
-export interface IArgApi extends IArgDate, IArgSocketIo {}
-export interface IArgApiTrading extends IArgMode, IArgDate {}
+export interface IArgApi extends IArgDate, IArgSocketIo { }
+export interface IArgApiTrading extends IArgMode, IArgDate { }
 export type ApiDoc = IObjStrToAnyOrT;
 export type Api = (arg: IArgApi) => Promise<ApiDoc>;
 export type Environment = 'development' | 'production';
@@ -40,6 +40,7 @@ export interface IArgFugleRealtime {
 }
 export type Ticks = IObjStrToAnyOrT<ApiDoc>;
 export type Cb = (arg: ApiDoc, bigO?: boolean) => any;
+export type ErrCb = (err: Error) => any;
 export interface IFugleRealtimeApiDoc {
   readonly meta: Api;
   readonly tick: Api;
@@ -126,11 +127,11 @@ const fugleRealtime = ({
   const join = async (
     { mode: m, symbolId }: IArgSocketIo,
     cb: Cb = (arg: ApiDoc): ApiDoc => arg,
-    errorCb = () => ({})
+    errCb: ErrCb = (err: Error) => (err)
   ): Promise<void | SocketIOClient.Socket> => {
     const doc: ApiDoc = merge(
-      await meta({ mode: m, symbolId }).catch(errorCb),
-      await tick({ mode: m, symbolId }).catch(errorCb),
+      await meta({ mode: m, symbolId }).catch(errCb),
+      await tick({ mode: m, symbolId }).catch(errCb),
     );
     if (!isArray(doc.ticks)) {
       doc.ticks = [];
