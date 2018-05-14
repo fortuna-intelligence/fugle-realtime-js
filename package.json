@@ -57,5 +57,5 @@
     "build-ts": "rimraf dist && tsc"
   },
   "types": "dist",
-  "version": "0.2.2"
+  "version": "0.2.3"
 }
