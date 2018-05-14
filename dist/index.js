@@ -28,6 +28,7 @@ const fugleRealtime = ({ token, environment = 'production', issuer = 'realtime',
         .headers(headers)
         .content('application/json')
         .auth(`Bearer ${token}`);
+    const modifyToken = (token) => wretch.auth(`Bearer ${token}`);
     const meta = ({ mode, symbolId, date }) => wretch
         .url('/meta')
         .json({ mode, symbolId, date })
@@ -53,7 +54,7 @@ const fugleRealtime = ({ token, environment = 'production', issuer = 'realtime',
     });
     const ticks = {};
     const cbs = {};
-    const join = ({ mode: m, symbolId }, cb = (arg) => arg, errCb = (err) => (err)) => __awaiter(this, void 0, void 0, function* () {
+    const join = ({ mode: m, symbolId }, cb = (arg) => arg, errCb = (err) => err) => __awaiter(this, void 0, void 0, function* () {
         const doc = merge(yield meta({ mode: m, symbolId }).catch(errCb), yield tick({ mode: m, symbolId }).catch(errCb));
         if (!isArray(doc.ticks)) {
             doc.ticks = [];
@@ -192,7 +193,7 @@ const fugleRealtime = ({ token, environment = 'production', issuer = 'realtime',
         }
         return;
     }), 60000);
-    return { api: { meta, tick }, socket: { io: socket, join, leave, ticks } };
+    return { modifyToken, api: { meta, tick }, socket: { io: socket, join, leave, ticks } };
 };
 fugleRealtime.default = fugleRealtime;
 export default fugleRealtime;

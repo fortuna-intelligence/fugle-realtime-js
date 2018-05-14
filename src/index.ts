@@ -3,6 +3,7 @@ import { isBoolean, isEmpty, isFunction, isNumber, isPlainObject, isString, orde
 import * as io from 'socket.io-client';
 import { parse } from 'url';
 import { default as wretcher } from 'wretch';
+import { Wretcher } from 'wretch/dist/wretcher';
 
 export interface IObjStrToAnyOrT<T = any> {
   [index: string]: T;
@@ -22,8 +23,8 @@ export interface IArgDate {
 export interface IArgSocketIo extends IArgMode {
   readonly symbolId: SymbolId;
 }
-export interface IArgApi extends IArgDate, IArgSocketIo { }
-export interface IArgApiTrading extends IArgMode, IArgDate { }
+export interface IArgApi extends IArgDate, IArgSocketIo {}
+export interface IArgApiTrading extends IArgMode, IArgDate {}
 export type ApiDoc = IObjStrToAnyOrT;
 export type Api = (arg: IArgApi) => Promise<ApiDoc>;
 export type Environment = 'development' | 'production';
@@ -52,6 +53,7 @@ export interface IFugleRealtimeSocketDoc {
   readonly ticks: Ticks;
 }
 export interface IFugleRealtimeDoc {
+  readonly modifyToken: (token: string) => Wretcher;
   readonly api: IFugleRealtimeApiDoc;
   readonly socket: IFugleRealtimeSocketDoc;
 }
@@ -96,6 +98,7 @@ const fugleRealtime = ({
     .headers(headers)
     .content('application/json')
     .auth(`Bearer ${token}`);
+  const modifyToken = (token: string): Wretcher => wretch.auth(`Bearer ${token}`);
   const meta = ({ mode, symbolId, date }: IArgApi): Promise<ApiDoc> =>
     wretch
       .url('/meta')
@@ -127,7 +130,7 @@ const fugleRealtime = ({
   const join = async (
     { mode: m, symbolId }: IArgSocketIo,
     cb: Cb = (arg: ApiDoc): ApiDoc => arg,
-    errCb: ErrCb = (err: Error) => (err)
+    errCb: ErrCb = (err: Error) => err,
   ): Promise<void | SocketIOClient.Socket> => {
     const doc: ApiDoc = merge(
       await meta({ mode: m, symbolId }).catch(errCb),
@@ -285,7 +288,7 @@ const fugleRealtime = ({
     }
     return;
   }, 60000);
-  return { api: { meta, tick }, socket: { io: socket, join, leave, ticks } };
+  return { modifyToken, api: { meta, tick }, socket: { io: socket, join, leave, ticks } };
 };
 (fugleRealtime as any).default = fugleRealtime;
 
