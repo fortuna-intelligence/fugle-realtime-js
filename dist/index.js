@@ -22,13 +22,16 @@ const fugleRealtime = ({ token, environment = 'production', issuer = 'realtime',
         'Fugle-Realtime-Auth-Issuer': issuer,
         'Fugle-Realtime-Auth-Environment': environment,
     };
-    const wretch = (fetch && isFunction(fetch) ? wretcher().polyfills({ fetch }) : wretcher())
+    let wretch = (fetch && isFunction(fetch) ? wretcher().polyfills({ fetch }) : wretcher())
         .url(`${url}/${version}/${namespace}`)
         .options({ credentials: 'include', mode: 'cors' })
         .headers(headers)
         .content('application/json')
         .auth(`Bearer ${token}`);
-    const modifyToken = (token) => wretch.auth(`Bearer ${token}`);
+    const modifyToken = (token) => {
+        wretch = wretch.auth(`Bearer ${token}`);
+        return undefined;
+    };
     const meta = ({ mode, symbolId, date }) => wretch
         .url('/meta')
         .json({ mode, symbolId, date })

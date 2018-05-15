@@ -3,7 +3,6 @@ import { isBoolean, isEmpty, isFunction, isNumber, isPlainObject, isString, orde
 import * as io from 'socket.io-client';
 import { parse } from 'url';
 import { default as wretcher } from 'wretch';
-import { Wretcher } from 'wretch/dist/wretcher';
 
 export interface IObjStrToAnyOrT<T = any> {
   [index: string]: T;
@@ -53,7 +52,7 @@ export interface IFugleRealtimeSocketDoc {
   readonly ticks: Ticks;
 }
 export interface IFugleRealtimeDoc {
-  readonly modifyToken: (token: string) => Wretcher;
+  readonly modifyToken: (token: string) => void;
   readonly api: IFugleRealtimeApiDoc;
   readonly socket: IFugleRealtimeSocketDoc;
 }
@@ -92,13 +91,16 @@ const fugleRealtime = ({
     'Fugle-Realtime-Auth-Issuer': issuer,
     'Fugle-Realtime-Auth-Environment': environment,
   };
-  const wretch = (fetch && isFunction(fetch) ? wretcher().polyfills({ fetch }) : wretcher())
+  let wretch = (fetch && isFunction(fetch) ? wretcher().polyfills({ fetch }) : wretcher())
     .url(`${url}/${version}/${namespace}`)
     .options({ credentials: 'include', mode: 'cors' })
     .headers(headers)
     .content('application/json')
     .auth(`Bearer ${token}`);
-  const modifyToken = (token: string): Wretcher => wretch.auth(`Bearer ${token}`);
+  const modifyToken = (token: string): void => {
+    wretch = wretch.auth(`Bearer ${token}`);
+    return undefined;
+  };
   const meta = ({ mode, symbolId, date }: IArgApi): Promise<ApiDoc> =>
     wretch
       .url('/meta')

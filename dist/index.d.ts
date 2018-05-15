@@ -1,5 +1,4 @@
 /// <reference types="socket.io-client" />
-import { Wretcher } from 'wretch/dist/wretcher';
 export interface IObjStrToAnyOrT<T = any> {
     [index: string]: T;
 }
@@ -47,7 +46,7 @@ export interface IFugleRealtimeSocketDoc {
     readonly ticks: Ticks;
 }
 export interface IFugleRealtimeDoc {
-    readonly modifyToken: (token: string) => Wretcher;
+    readonly modifyToken: (token: string) => void;
     readonly api: IFugleRealtimeApiDoc;
     readonly socket: IFugleRealtimeSocketDoc;
 }
