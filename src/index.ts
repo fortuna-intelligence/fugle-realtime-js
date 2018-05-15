@@ -57,6 +57,7 @@ export interface IFugleRealtimeDoc {
   readonly socket: IFugleRealtimeSocketDoc;
 }
 type Cbs = IObjStrToAnyOrT<Cb>;
+type ErrCbs = IObjStrToAnyOrT<ErrCb>;
 type OpMethod = 'push' | 'update' | 'pull';
 interface IOp {
   readonly method: OpMethod;
@@ -129,6 +130,7 @@ const fugleRealtime = ({
   });
   const ticks: Ticks = {};
   const cbs: Cbs = {};
+  const errCbs: ErrCbs = {};
   const join = async (
     { mode: m, symbolId }: IArgSocketIo,
     cb: Cb = (arg: ApiDoc): ApiDoc => arg,
@@ -147,6 +149,7 @@ const fugleRealtime = ({
       cbs[symbolId] = cb;
       cb(doc);
       socket.emit('join', { mode, symbolId });
+      errCbs[symbolId] = errCb;
     }
     return;
   };

@@ -57,6 +57,7 @@ const fugleRealtime = ({ token, environment = 'production', issuer = 'realtime',
     });
     const ticks = {};
     const cbs = {};
+    const errCbs = {};
     const join = ({ mode: m, symbolId }, cb = (arg) => arg, errCb = (err) => err) => __awaiter(this, void 0, void 0, function* () {
         const doc = merge(yield meta({ mode: m, symbolId }).catch(errCb), yield tick({ mode: m, symbolId }).catch(errCb));
         if (!isArray(doc.ticks)) {
@@ -68,6 +69,7 @@ const fugleRealtime = ({ token, environment = 'production', issuer = 'realtime',
             cbs[symbolId] = cb;
             cb(doc);
             socket.emit('join', { mode, symbolId });
+            errCbs[symbolId] = errCb;
         }
         return;
     });
